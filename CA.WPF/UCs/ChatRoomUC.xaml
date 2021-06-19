@@ -1,0 +1,92 @@
+﻿<UserControl
+	x:Class="CA.UCs.ChatRoomUC"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d" 
+	xmlns:UCs="clr-namespace:CA.UCs"
+>
+	<UserControl.Resources>
+		<SolidColorBrush
+			x:Key="DisconnectedBrush"
+			Color="Tomato"
+			Opacity="0.2"
+		/>
+		<SolidColorBrush
+			x:Key="ConnectedBrush"
+			Color="YellowGreen"
+			Opacity="0.2"
+		/>
+		<Style
+			x:Key="ChatConsoleStyle"
+			TargetType="TextBox"
+		>
+			<Setter Property="FontFamily" Value="Courier New" />
+			<Setter Property="IsReadOnly" Value="True" />
+			<Setter Property="BorderBrush" Value="Transparent" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="Background" Value="{StaticResource ConnectedBrush}" />
+			<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+		</Style>
+	</UserControl.Resources>
+	<Grid>
+		<Grid
+			Visibility="{Binding IsConnected, Converter={StaticResource BoolCollapsedConverter}}"
+			Background="{StaticResource DisconnectedBrush}"
+		>
+			<TextBlock
+				FontSize="20"
+				Text="{Binding Room.Name}"
+				Foreground="Black"
+				VerticalAlignment="Center"
+				HorizontalAlignment="Center"
+			/>
+		</Grid>
+		<Grid
+			Visibility="{Binding IsConnected, Converter={StaticResource BoolVisibleConverter}}"
+		>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition Width="5" />
+				<ColumnDefinition Width="250" />
+			</Grid.ColumnDefinitions>
+			<GridSplitter
+				Grid.Column="1"
+				Width="5"
+				HorizontalAlignment="Stretch"
+			/>
+			<UCs:UserListUC
+				Grid.Column="2"
+				DataContext="{Binding Users}"
+			/>
+			<TabControl
+				Grid.Column="0"
+				x:Name="root"
+			>
+				<TabItem
+					Header="Realtime"
+					IsSelected="{Binding IsRealtime, Mode=OneWay}"
+					x:Name="A"
+				>
+					<TextBox
+						x:Name="A_Text"
+						Style="{StaticResource ChatConsoleStyle}"
+						Text="{Binding RealtimeView, Mode=OneWay}"
+					/>
+				</TabItem>
+				<TabItem
+					Header="Hourly"
+					IsSelected="{Binding IsRealtime, Mode=OneWay, Converter={StaticResource BoolReverseConverter}}"
+					x:Name="B"
+				>
+					<TextBox
+						x:Name="B_Text"
+						Style="{StaticResource ChatConsoleStyle}"
+						Text="{Binding HourlyView, Mode=OneWay}"
+					/>
+				</TabItem>
+			</TabControl>
+		</Grid>
+	</Grid>
+</UserControl>
